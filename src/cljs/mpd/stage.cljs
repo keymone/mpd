@@ -1,8 +1,10 @@
-(ns mpd.client.stage)
+(ns mpd.client.stage
+  (:require [mpd.client.map :as map]))
 
-(def stage (js/PIXI.Stage. 0xE3FCFF))
+(def stage (js/PIXI.Container.))
 (def renderer (js/PIXI.autoDetectRenderer
                 (.-innerWidth js/window) (.-innerHeight js/window)))
+(set! (.-backgroundColor renderer) "0xFFFFFF")
 
 (def stats (js/Stats.))
 (set! (-> (.-domElement stats) .-style .-position) "absolute")
@@ -13,14 +15,13 @@
 (.appendChild (.-body js/document) (.-view renderer))
 (.appendChild (.-body js/document) (.-domElement stats))
 
+(.addChild stage map/container)
+
 (defn render-stage []
-  (js/requestAnimFrame render-stage)
+  (js/requestAnimationFrame render-stage)
   (.begin stats)
   (update-world)
   (.end stats)
   (.render renderer stage))
-
-(defn add-sprite-to-stage [sprite]
-  (.addChild stage sprite))
 
 (defn update-world [])

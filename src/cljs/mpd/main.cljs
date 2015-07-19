@@ -4,4 +4,4 @@
 (defn log [& items]
   (.log js/console (apply str items)))
 
-(js/requestAnimFrame stage/render-stage)
+(js/requestAnimationFrame stage/render-stage)
