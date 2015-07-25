@@ -5,8 +5,8 @@
   (log "  game")
   (main-loop stage player network))
 
+(def state (atom {}))
+
 (defn main-loop [stage player network]
-  (network)
-  (player)
-  (stage)
+  (-> state network player stage)
   (js/requestAnimationFrame #(main-loop stage player network)))

@@ -32,6 +32,8 @@
 
     (.addChild stage map/container)
 
-    (fn [] (.begin stats)
-           (.render renderer (state-to-pixi stage)) ; use % here to pass game state
-           (.end stats))))
+    (fn [state]
+      (.begin stats)
+      (.render renderer (state-to-pixi stage)) ; use % here to pass game state
+      (.end stats)
+      state)))

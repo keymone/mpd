@@ -2,4 +2,5 @@
   (:require [mpd.shared :refer [log]]))
 
 (defn setup []
-  (log "  network"))
+  (log "  network")
+  (fn [state] state))
