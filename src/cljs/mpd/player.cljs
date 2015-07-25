@@ -47,7 +47,9 @@
           y (:y player)
           speed (:speed player)
           dx (if (:left @input) (- speed) (if (:right @input) speed 0))
-          dy (if (:up @input) (- speed) (if (:down @input) speed 0))]
-      (when (not (= dy 0)) (swap! state assoc-in [:player :y] (+ y dy)))
-      (when (not (= dx 0)) (swap! state assoc-in [:player :x] (+ x dx))))
+          dy (if (:up @input) (- speed) (if (:down @input) speed 0))
+          ndx (if (and (not (= dx 0)) (not (= dy 0))) (* dx 0.7071) dx)
+          ndy (if (and (not (= dx 0)) (not (= dy 0))) (* dy 0.7071) dy)]
+      (when (not (= dy 0)) (swap! state assoc-in [:player :y] (+ y ndy)))
+      (when (not (= dx 0)) (swap! state assoc-in [:player :x] (+ x ndx))))
     state))
