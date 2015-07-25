@@ -45,8 +45,9 @@
     (let [player (:player @state)
           x (:x player)
           y (:y player)
-          dx (if (:left @input) -1 (if (:right @input) 1 0))
-          dy (if (:up @input) -1 (if (:down @input) 1 0))]
+          speed (:speed player)
+          dx (if (:left @input) (- speed) (if (:right @input) speed 0))
+          dy (if (:up @input) (- speed) (if (:down @input) speed 0))]
       (when (not (= dy 0)) (swap! state assoc-in [:player :y] (+ y dy)))
       (when (not (= dx 0)) (swap! state assoc-in [:player :x] (+ x dx))))
     state))

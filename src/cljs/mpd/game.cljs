@@ -4,7 +4,8 @@
 (def state (atom {
   :player {:x 0
            :y 0
-           :hp 100}
+           :hp 100
+           :speed 3}
 }))
 
 (defn setup [stage player network]
