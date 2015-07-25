@@ -1,7 +1,11 @@
 (ns mpd.game
   (:require [mpd.shared :refer [log]]))
 
-(def state (atom {}))
+(def state (atom {
+  :player {:x 0
+           :y 0
+           :hp 100}
+}))
 
 (defn setup [stage player network]
   (log "  game")
@@ -16,6 +20,5 @@
       (js/requestAnimationFrame gameloop)
       (.begin stats)
       (-> state network player stage)
-      (.end stats)))
-
-    (js/requestAnimationFrame gameloop))
+      (.end stats))
+    (js/requestAnimationFrame gameloop)))
