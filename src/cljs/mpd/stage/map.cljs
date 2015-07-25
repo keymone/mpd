@@ -1,4 +1,4 @@
-(ns mpd.client.map)
+(ns mpd.stage.map)
 
 (def container
   (js/PIXI.Container.))

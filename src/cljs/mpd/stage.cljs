@@ -1,6 +1,6 @@
-(ns mpd.client.stage
-  (:require [mpd.client.map :as map]
-            [mpd.client.world :as world]))
+(ns mpd.stage
+  (:require [mpd.shared :refer [log]]
+            [mpd.stage.map :as map]))
 
 (def renderer (js/PIXI.autoDetectRenderer
                 (.-innerWidth js/window)
@@ -24,5 +24,9 @@
 (defn render-stage []
   (js/requestAnimationFrame render-stage)
   (.begin stats)
-  (.render renderer (world/update stage))
+  (.render renderer stage)
   (.end stats))
+
+(defn setup []
+  (js/requestAnimationFrame render-stage)
+  (log "  stage"))
