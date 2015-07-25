@@ -24,16 +24,8 @@
     (set! (.-backgroundColor renderer) "0xFFFFFF")
     (.appendChild (.-body js/document) (.-view renderer))
 
-    (set! (-> (.-domElement stats) .-style .-position) "absolute")
-    (set! (-> (.-domElement stats) .-style .-display) "inline-block")
-    (set! (-> (.-domElement stats) .-style .-top) "0px")
-    (set! (-> (.-domElement stats) .-style .-right) "0px")
-    (.appendChild (.-body js/document) (.-domElement stats))
-
     (.addChild stage map/container)
 
     (fn [state]
-      (.begin stats)
       (.render renderer (state-to-pixi stage)) ; use % here to pass game state
-      (.end stats)
       state)))
