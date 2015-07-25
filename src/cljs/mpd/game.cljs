@@ -6,5 +6,7 @@
   (main-loop stage player network))
 
 (defn main-loop [stage player network]
+  (network)
+  (player)
   (stage)
-  (js/requestAnimationFrame main-loop))
+  (js/requestAnimationFrame #(main-loop stage player network)))
