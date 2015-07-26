@@ -18,6 +18,8 @@
     (set! (-> (.-domElement stats) .-style .-right) "0px")
     (.appendChild (.-body js/document) (.-domElement stats))
 
+    (.addEventListener js/window "contextmenu" #(do (.preventDefault %) false))
+
     (defn gameloop []
       (js/requestAnimationFrame gameloop)
       (.begin stats)

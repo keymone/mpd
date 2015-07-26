@@ -3,7 +3,12 @@
 
 (defmulti pixi (fn [x y] x))
 (defmethod pixi :player [_ state]
-  (let [obj (js/PIXI.Text. (str (:hp state)) (js-obj "fill" "red"))]
+  (let [fill (case [(:primary state) (:secondary state)]
+               [true true] "green"
+               [true false] "red"
+               [false true] "blue"
+               "black")
+        obj (js/PIXI.Text. (str (:hp state)) (js-obj "fill" fill))]
     (aset obj "anchor" (js-obj "x" 0.5 "y" 0.5))
     (aset obj "position" (js-obj "x" (:x state) "y" (:y state)))
     (aset obj "rotation" (:rotation state))
@@ -18,7 +23,7 @@
 (defn state-to-pixi [state]
   (let [world (js/PIXI.Container.)]
     (doseq [kv @state]
-      (.addChild world (pixi (first kv) (last kv))))
+      (.addChild world (apply pixi kv)))
     world))
 
 (defn setup []

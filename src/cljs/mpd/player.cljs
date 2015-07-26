@@ -8,7 +8,9 @@
                   :click false
                   :rclick false
                   :mousex 0
-                  :mousey 0}))
+                  :mousey 0
+                  :primary false
+                  :secondary false}))
 
 (defn keyhandler [event]
   (let [key (case (.-keyCode event)
@@ -58,5 +60,7 @@
           mx (:mousex @input) my (:mousey @input)]
       (when (not (= dy 0)) (swap! state assoc-in [:player :y] (+ y (* speed nc dy))))
       (when (not (= dx 0)) (swap! state assoc-in [:player :x] (+ x (* speed nc dx))))
-      (swap! state assoc-in [:player :rotation] (Math/atan2 (- my y) (- mx x)) ))
+      (swap! state assoc-in [:player :rotation] (Math/atan2 (- my y) (- mx x)))
+      (swap! state assoc-in [:player :primary] (:click @input))
+      (swap! state assoc-in [:player :secondary] (:rclick @input)))
     state))
