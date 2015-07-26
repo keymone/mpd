@@ -1,6 +1,14 @@
 (ns mpd.stage
   (:require [mpd.shared :refer [log]]))
 
+(defmulti pixi (fn [x y] x))
+(defmethod pixi :player [_ state]
+  (let [obj (js/PIXI.Text. (str (:hp state)) (js-obj "fill" "red"))]
+    (aset obj "anchor" (js-obj "x" 0.5 "y" 0.5))
+    (aset obj "position" (js-obj "x" (:x state) "y" (:y state)))
+    (aset obj "rotation" (:rotation state))
+    obj))
+
 ; state - hierarchical primitive-only representation
 ; of current frame:
 ;
@@ -12,13 +20,6 @@
     (doseq [kv @state]
       (.addChild world (pixi (first kv) (last kv))))
     world))
-
-(defmulti pixi (fn [x y] x))
-(defmethod pixi :player [_ state]
-  (let [obj (js/PIXI.Text. (str (:hp state)) (js-obj "fill" "red"))]
-    (aset obj "anchor" (js-obj "x" 0 "y" 0))
-    (aset obj "position" (js-obj "x" (:x state) "y" (:y state)))
-    obj))
 
 (defn setup []
   (log "  stage")

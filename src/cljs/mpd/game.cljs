@@ -2,10 +2,11 @@
   (:require [mpd.shared :refer [log]]))
 
 (def state (atom {
-  :player {:x 0
-           :y 0
+  :player {:x 300
+           :y 300
            :hp 100
-           :speed 3}
+           :speed 3
+           :rotation 0}
 }))
 
 (defn setup [stage player network]

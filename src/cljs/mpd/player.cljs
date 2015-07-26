@@ -16,20 +16,24 @@
               (40 83) :down
               (37 65) :left
               (39 68) :right
-              "default" nil)
+              nil)
         updown (case (.-type event)
                  "keydown" true
                  "keyup" false
-                 "default" nil)]
+                 nil)]
     (when (not (or (= key nil) (= updown nil)))
       (when (not (.-repeat event))
         (swap! input assoc key updown)))))
 
 (defn mousehandler [event]
-  )
+  (let [key (case (.-button event) 0 :click 2 :rclick nil)
+        val (case (.-type event) "mousedown" true "mouseup" false nil)]
+    (when (not (and (= nil key) (= nil val)))
+      (swap! input assoc key val))))
 
 (defn movehandler [event]
-  )
+  (swap! input assoc :mousex (.-clientX event))
+  (swap! input assoc :mousey (.-clientY event)))
 
 (defn start-listening []
   (aset js/document "onkeydown"   keyhandler)
@@ -43,13 +47,16 @@
   (fn [state]
     (start-listening)
     (let [player (:player @state)
-          x (:x player)
-          y (:y player)
+          x (:x player) y (:y player)
+          ; movement
           speed (:speed player)
           dx (if (:left @input) -1 (if (:right @input) 1 0))
           dy (if (:up @input) -1 (if (:down @input) 1 0))
           ; moving diagonally should mean moving faster distance-wise
-          nc (if (and (not (= dx 0)) (not (= dy 0))) 0.7071 1)]
+          nc (if (and (not (= dx 0)) (not (= dy 0))) 0.7071 1)
+          ; rotation
+          mx (:mousex @input) my (:mousey @input)]
       (when (not (= dy 0)) (swap! state assoc-in [:player :y] (+ y (* speed nc dy))))
-      (when (not (= dx 0)) (swap! state assoc-in [:player :x] (+ x (* speed nc dx)))))
+      (when (not (= dx 0)) (swap! state assoc-in [:player :x] (+ x (* speed nc dx))))
+      (swap! state assoc-in [:player :rotation] (Math/atan2 (- my y) (- mx x)) ))
     state))
