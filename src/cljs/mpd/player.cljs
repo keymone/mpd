@@ -46,10 +46,10 @@
           x (:x player)
           y (:y player)
           speed (:speed player)
-          dx (if (:left @input) (- speed) (if (:right @input) speed 0))
-          dy (if (:up @input) (- speed) (if (:down @input) speed 0))
-          ndx (if (and (not (= dx 0)) (not (= dy 0))) (* dx 0.7071) dx)
-          ndy (if (and (not (= dx 0)) (not (= dy 0))) (* dy 0.7071) dy)]
-      (when (not (= dy 0)) (swap! state assoc-in [:player :y] (+ y ndy)))
-      (when (not (= dx 0)) (swap! state assoc-in [:player :x] (+ x ndx))))
+          dx (if (:left @input) -1 (if (:right @input) 1 0))
+          dy (if (:up @input) -1 (if (:down @input) 1 0))
+          ; moving diagonally should mean moving faster distance-wise
+          nc (if (and (not (= dx 0)) (not (= dy 0))) 0.7071 1)]
+      (when (not (= dy 0)) (swap! state assoc-in [:player :y] (+ y (* speed nc dy))))
+      (when (not (= dx 0)) (swap! state assoc-in [:player :x] (+ x (* speed nc dx)))))
     state))
