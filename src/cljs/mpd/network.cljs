@@ -6,6 +6,8 @@
 
 (def websocket (js/WebSocket. "ws://localhost:8192"))
 
+(def lastFramePlayer nil)
+
 (def inbox [])
 
 (defn clj->json
@@ -13,11 +15,11 @@
   (.stringify js/JSON (clj->js ds)))
 
 (defn- send [m]
-  (.send @websocket m))
+  (.send websocket m))
 
 (defn- receive [m]
   (let [data (.-data m)]
-    (def inbox (conj inbox data))
+    (swap! inbox conj data)
     (log data)))
 
 (defn setup []
@@ -36,5 +38,10 @@
   (fn [state]
     ; erase inbox queue for now
     (def inbox [])
-    (log " network update")
+    (let [player (:player @state)]
+      (when (not= player lastFramePlayer)
+        (let [json (clj->json player)]
+          (send json)
+          (log " player data sent to server")))
+      (def lastFramePlayer player))
     state))

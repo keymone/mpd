@@ -1,4 +1,5 @@
 require 'em-websocket'
+require 'json'
 
 EventMachine.run {
   @channel = EM::Channel.new
@@ -7,10 +8,12 @@ EventMachine.run {
 
     ws.onopen {
       sid = @channel.subscribe { |msg| ws.send msg }
-      @channel.push "#{sid} connected!"
+      # @channel.push "#{sid} connected!"
 
       ws.onmessage { |msg|
-        @channel.push "<#{sid}>: #{msg}"
+        msg_hash = JSON.parse(msg) rescue {}
+        print "Parsed message:\n#{msg_hash}\n"
+        # @channel.push "<#{sid}>: #{msg}"
       }
 
       ws.onclose {
