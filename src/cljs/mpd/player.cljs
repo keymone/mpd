@@ -8,9 +8,7 @@
                   :click false
                   :rclick false
                   :mousex 0
-                  :mousey 0
-                  :primary false
-                  :secondary false}))
+                  :mousey 0}))
 
 (defn keyhandler [event]
   (let [key (case (.-keyCode event)

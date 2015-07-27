@@ -6,7 +6,9 @@
            :y 300
            :hp 100
            :speed 3
-           :rotation 0}
+           :rotation 0
+           :primary false
+           :secondary false}
 }))
 
 (defn setup [stage player network]
