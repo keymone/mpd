@@ -46,8 +46,8 @@
 
 (defn setup [stage player network]
   (log "  player")
+  (start-listening)
   (fn [state]
-    (start-listening)
     (let [player (:player @state)
           x (:x player) y (:y player)
           ; movement
