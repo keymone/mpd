@@ -1,5 +1,6 @@
 (ns mpd.network
-  (:require [mpd.shared :refer [log]]))
+  (:require [mpd.shared :refer [log]]
+            [mpd.enemies :as enemies]))
 
 (def websocket (atom nil))
 (def syncedFramePlayer (atom nil))

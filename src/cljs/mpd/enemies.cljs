@@ -1,5 +1,14 @@
-(ns mpd.enemies)
+(ns mpd.enemies
+  (:require [mpd.shared :refer [log]]))
 
-(defn setup [])
+(def enemies (atom {}))
 
-(defn sync [json])
+(defn sync [json]
+  (swap! enemies conj {(.-id json) json}))
+
+(defn setup []
+  (log "  enemies")
+  (fn [state]
+    (log @enemies)
+    (swap! state assoc :enemies @enemies)
+    state))
