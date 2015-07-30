@@ -22,7 +22,6 @@
           [] (seq enemies)))
 
 (defmethod pixi :bullet [_ bullet]
-  (log bullet)
   (let [shape (js/PIXI.Text.
                 (str "b")
                 (js-obj "fill" "red"))]
