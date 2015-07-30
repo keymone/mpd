@@ -3,28 +3,29 @@ require 'json'
 
 tick = 0
 frequency = 30
-
-inbox = [] # dict list
-mutex = Mutex.new
-
+inbox = []
 player_id = 0
+
+ticker = Thread.new do
+  loop do
+    sleep(1.0/frequency) # 1/30s, wait ~ 2 frames
+    tick += 1
+  end
+end
 
 EventMachine.run {
   @channel = EM::Channel.new
   EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8197, :debug => true) do |ws|
 
-    ticker = Thread.new do
-      loop do
-        sleep(1.0/frequency) # 1/30s, wait ~ 2 frames
-        mutex.synchronize do
-          if inbox.any?
-            puts "Processing current inbox queue having #{inbox.size} elements at tick #{tick}"
-            inbox = [] # reset inbox queue
-          end
+    timer = EM.add_periodic_timer(0) {
+      if inbox.any?
+        inbox_tmp = inbox.clone
+        inbox = []
+        inbox_tmp.each do |object|
+          @channel.push object.to_json
         end
-        tick += 1
       end
-    end
+    }
 
     network = Thread.new do
       ws.onopen {
@@ -35,9 +36,7 @@ EventMachine.run {
         ws.onmessage { |msg|
           msg_hash = JSON.parse(msg) rescue {}
 
-          mutex.synchronize do
-            inbox << msg_hash
-          end
+          inbox << msg_hash
 
           # print "Parsed message:\n#{msg_hash}\n"
           # @channel.push "<#{sid}>: #{msg}"
@@ -51,4 +50,5 @@ EventMachine.run {
 
   end
   puts "Multi[P]layer Deatchmatch Server started!"
+  $stdout.flush
 }
