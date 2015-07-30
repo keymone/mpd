@@ -14,4 +14,5 @@
 (game/setup
   (stage/setup)
   (player/setup)
-  (network/setup))
+  (network/setup)
+  (bullets/setup))

@@ -19,9 +19,17 @@
         :rotation 10
         :primary false
         :secondary false}}
+  :bullets [{
+    :x 300
+    :y 300
+    :speed 5
+    :angle 0
+    :damage 10
+    :distance 500
+    :type 'dumdum'
+  }]
 }))
-
-(defn setup [stage player network]
+(defn setup [stage player network bullets]
   (log "  game")
   (let [stats (js/Stats.)]
     (set! (-> (.-domElement stats) .-style .-position) "absolute")
@@ -35,6 +43,6 @@
     (defn gameloop []
       (js/requestAnimationFrame gameloop)
       (.begin stats)
-      (-> state network player stage)
+      (-> state network player bullets stage)
       (.end stats))
     (js/requestAnimationFrame gameloop)))
