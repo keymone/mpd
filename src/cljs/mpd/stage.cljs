@@ -4,6 +4,7 @@
             [mpd.assets :as assets]))
 
 (def player-sprites (atom {}))
+
 (defn player-sprite [player]
   (let [exists (get @player-sprites (:id player))]
     (if (nil? exists)
