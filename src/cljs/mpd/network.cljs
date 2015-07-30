@@ -34,9 +34,11 @@
     (.send @websocket m)))
 
 (defn receive [m]
-  (let [data (.-data m)]
-    (log "data received:" m)
-    (swap! inbox conj data)))
+  (let [data (.-data m)
+        json (.parse js/JSON data)]
+    (if (= @server-id (.-id json))
+      (player/sync json)
+      (enemies/sync json))))
 
 (defn clj->json [ds]
   (.stringify js/JSON (clj->js ds)))

@@ -42,6 +42,8 @@
   (aset js/document "onmouseup"   mousehandler)
   (aset js/document "onmousemove" movehandler))
 
+(defn sync [json])
+
 (defn setup [stage player network]
   (log "  player")
   (start-listening)

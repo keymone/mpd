@@ -18,8 +18,7 @@
 (defmethod pixi :enemies [_ enemies]
   (reduce (fn [agg enemy]
             (concat agg (pixi :player (last enemy))))
-          []
-          (seq enemies)))
+          [] (seq enemies)))
 
 ; state - hierarchical primitive-only representation
 ; of current frame:
