@@ -24,14 +24,19 @@
     (aset @websocket "onmessage" receive)
     (reset! network-state :connected)))
 
+(defn current-frame []
+  (merge @currentFramePlayer {:entities @currentAttachments}))
+
 (defn heartbeat []
-  (when (not= @currentFramePlayer @syncedFramePlayer)
-    (send  (clj->json @currentFramePlayer)))
-  (reset! syncedFramePlayer @currentFramePlayer))
+  (let [current @currentFramePlayer
+        synced @syncedFramePlayer]
+    (when (not= current synced)
+      (send (clj->json (current-frame)))
+      (reset! currentAttachments [])
+      (reset! syncedFramePlayer @currentFramePlayer))))
 
 (defn send [m]
   (when (= @network-state :connected)
-    ; (log " player data sent to server")
     (.send @websocket m)))
 
 (defn receive [m]
@@ -40,6 +45,10 @@
     (if (= @server-id (.-id json))
       (player/sync json)
       (enemies/sync json))))
+
+(def currentAttachments (atom []))
+(defn attach [entity]
+  (swap! currentAttachments conj entity))
 
 (defn clj->json [ds]
   (.stringify js/JSON (clj->js ds)))
@@ -58,13 +67,9 @@
     (log "Websocket setup done"))
 
   (fn [state]
-    ; erase inbox queue for now
-    (reset! inbox [])
-
     (when (not= (:id (:player @state)) @server-id)
       (log "change player id: " (:id (:player state)) " to " @server-id)
       (swap! state assoc-in [:player :id] @server-id))
 
-    (let [player (:player @state)]
-      (reset! currentFramePlayer player))
+    (reset! currentFramePlayer (:player @state))
     state))

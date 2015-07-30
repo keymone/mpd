@@ -1,6 +1,7 @@
 (ns mpd.player
   (:require [mpd.shared :refer [log]]
-            [mpd.bullets :as bullets]))
+            [mpd.bullets :as bullets]
+            [mpd.network :as network]))
 
 ; INPUTS
 
@@ -69,6 +70,7 @@
   (when (nil? @fire_timer)
     (reset! fire_timer (:delay bullet))
     (js/setTimeout #(reset! fire_timer nil) (:delay bullet))
+    (network/attach bullet)
     (bullets/fire bullet)
     (.stop fire_sound)
     (.play fire_sound)))
