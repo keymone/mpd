@@ -2,7 +2,8 @@
   (:require [mpd.shared :refer [log]]))
 
 (def state (atom {
-  :player {:x 300
+  :player {:id -1
+           :x 300
            :y 300
            :hp 100
            :speed 3

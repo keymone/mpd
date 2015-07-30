@@ -4,7 +4,7 @@
 (def websocket (atom nil))
 (def lastFramePlayer (atom nil))
 (def network-state (atom nil))
-(def server-id (atom nil))
+(def server-id (atom -1))
 (def inbox (atom []))
 
 (defn parseJSON [x] (.parse (.-JSON js/window) x))
@@ -52,6 +52,7 @@
     (reset! inbox [])
 
     (when (not= (:id (:player @state)) @server-id)
+      (log "change player id: " (:id (:player state)) " to " @server-id)
       (swap! state assoc-in [:player :id] @server-id))
 
     (let [player (:player @state)]

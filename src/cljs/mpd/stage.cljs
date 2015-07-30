@@ -8,7 +8,9 @@
                [true false] "red"
                [false true] "blue"
                "black")
-        obj (js/PIXI.Text. (str (:hp state)) (js-obj "fill" fill))]
+        obj (js/PIXI.Text.
+              (str (:id state))
+              (js-obj "fill" fill))]
     (aset obj "anchor" (js-obj "x" 0.5 "y" 0.5))
     (aset obj "position" (js-obj "x" (:x state) "y" (:y state)))
     (aset obj "rotation" (:rotation state))
