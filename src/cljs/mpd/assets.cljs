@@ -19,6 +19,9 @@
 (def player_texture
   (js/PIXI.Texture.fromImage "images/player.png"))
 
+(defn bullet_sprite []
+  (puke_sprite "images/bullet.png" 1.0 false))
+
 (def crosshair_sprite
   (puke_sprite "images/crosshair.png" 1.0 false))
 

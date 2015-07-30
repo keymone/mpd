@@ -27,11 +27,10 @@
           [] (seq enemies)))
 
 (defmethod pixi :bullet [_ bullet]
-  (let [shape (js/PIXI.Text.
-                (str "b")
-                (js-obj "fill" "red"))]
+  (let [shape (assets/bullet_sprite)]
     (aset shape "anchor" (js-obj "x" 0.5 "y" 0.5))
     (aset shape "position" (js-obj "x" (:x bullet) "y" (:y bullet)))
+    (aset shape "rotation" (:angle bullet))
     [shape]))
 
 (defmethod pixi :bullets [_ bullets]
