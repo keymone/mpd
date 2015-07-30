@@ -3,7 +3,8 @@
 
 (def websocket (atom nil))
 (def lastFramePlayer (atom nil))
-(def network-state (atom :initial))
+(def network-state (atom nil))
+(def server-id (atom nil))
 (def inbox (atom []))
 
 (defn parseJSON [x] (.parse (.-JSON js/window) x))
@@ -12,18 +13,22 @@
 (defn websocket-error [e] (log "ERROR" e))
 
 (defn websocket-handshake [m]
-  (log "HANDSHAKE" m)
-  (aset @websocket "onmessage" receive)
-  (reset! network-state :connected))
+  (let [data (.-data m)
+        json (.parse js/JSON data)
+        player-id (.-id json)]
+    (log "HANDSHAKE " player-id)
+    (reset! server-id player-id)
+    (aset @websocket "onmessage" receive)
+    (reset! network-state :connected)))
 
 (defn send [m]
   (when (= @network-state :connected)
-    (log " player data sent to server")
+    ; (log " player data sent to server")
     (.send @websocket m)))
 
 (defn receive [m]
   (let [data (.-data m)]
-    (log "data received:" m)
+    ; (log "data received:" m)
     (swap! inbox conj data)))
 
 (defn clj->json [ds]
@@ -45,8 +50,13 @@
   (fn [state]
     ; erase inbox queue for now
     (reset! inbox [])
+
+    (when (not= (:id (:player @state)) @server-id)
+      (swap! state assoc-in [:player :id] @server-id))
+
     (let [player (:player @state)]
       (when (not= player @lastFramePlayer)
         (send  (clj->json player)))
       (reset! lastFramePlayer player))
+
     state))

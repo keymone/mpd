@@ -15,7 +15,7 @@ end
 
 EventMachine.run {
   @channel = EM::Channel.new
-  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8197, :debug => true) do |ws|
+  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8197) do |ws|
 
     timer = EM.add_periodic_timer(0) {
       if inbox.any?
