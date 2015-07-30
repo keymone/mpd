@@ -49,8 +49,8 @@
 ; FIRE
 
 (defn make-bullet [player]
-  {:x (+ (:x player) (* (Math/cos (:rotation player)) 80))
-   :y (+ (:y player) (* (Math/sin (:rotation player)) 80))
+  {:x (+ (:x player) (* (Math/cos (+ 0.17 (:rotation player))) 80))
+   :y (+ (:y player) (* (Math/sin (+ 0.17 (:rotation player))) 80))
    :angle (:rotation player)
    :speed 10
    :distance 100
