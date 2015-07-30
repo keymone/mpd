@@ -49,25 +49,41 @@
   (aset assets/crosshair_sprite "position" (js-obj "x" (:x crosshair) "y" (:y crosshair)))
   [assets/crosshair_sprite])
 
-(def root (let [c (js/PIXI.Container.)]
-  (.addChild c assets/background_tiling_sprite) c))
-(def world (let [c (js/PIXI.Container.)] (.addChild root c) c))
-(def players (let [c (js/PIXI.Container.)] (.addChild root c) c))
+(def root (js/PIXI.Container.))
+(def world
+  (let [c (js/PIXI.Container.)]
+    (.addChild root c) c))
+(def static
+  (let [c (js/PIXI.Container.)]
+    (.addChild root c) c))
 
 (defn state-to-pixi [state]
   (.removeChildren world)
-  (.removeChildren players)
+  (.removeChildren static)
+  (.addChild world assets/background_tiling_sprite)
+  (let [x (:x (:player @state))
+        y (:y (:player @state))]
+    (aset static "x" (- (/ (:w dimensions) 2) x))
+    (aset static "y" (- (/ (:h dimensions) 2) y))
+    (aset world "x" (- (/ (:w dimensions) 2) x))
+    (aset world "y" (- (/ (:h dimensions) 2) y)))
   (doseq [kv @state]
     (doseq [obj (apply pixi kv)]
-      (let [container (case (first kv) :player players world)]
+      (let [container (case (first kv)
+                        :player static
+                        :crosshair root
+                        world)]
         (.addChild container obj))))
   root)
 
+(def dimensions {:w (- (.-innerWidth js/window) 4)
+                 :h (- (.-innerHeight js/window) 4)})
+
 (defn setup []
   (log "  stage")
+  (log dimensions)
   (let [renderer (js/PIXI.autoDetectRenderer
-          (- (.-innerWidth js/window) 4)
-          (- (.-innerHeight js/window) 4)
+          (:w dimensions) (:h dimensions)
           #js {:antialiasing false
           :transparent false
           :resolution 1})

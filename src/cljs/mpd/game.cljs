@@ -18,7 +18,7 @@
   }
 }))
 
-(defn setup [stage player network bullets enemies]
+(defn setup [stage player network bullets collisions]
   (log "  game")
   (let [stats (js/Stats.)]
     (set! (-> (.-domElement stats) .-style .-position) "absolute")
@@ -32,6 +32,6 @@
     (defn gameloop []
       (js/requestAnimationFrame gameloop)
       (.begin stats)
-      (-> state network player enemies bullets stage)
+      (-> state network player bullets collisions stage)
       (.end stats))
     (js/requestAnimationFrame gameloop)))

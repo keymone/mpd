@@ -2,7 +2,7 @@
   (:require [mpd.shared :refer [log]]
             [mpd.stage :as stage]
             [mpd.player :as player]
-            [mpd.enemies :as enemies]
+            [mpd.collisions :as collisions]
             [mpd.network :as network]
             [mpd.game :as game]
             [mpd.bullets :as bullets]))
@@ -18,4 +18,4 @@
   (player/setup)
   (network/setup)
   (bullets/setup)
-  (enemies/setup))
+  (collisions/setup))
