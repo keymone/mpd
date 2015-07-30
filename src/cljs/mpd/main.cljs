@@ -3,7 +3,8 @@
             [mpd.stage :as stage]
             [mpd.player :as player]
             [mpd.network :as network]
-            [mpd.game :as game]))
+            [mpd.game :as game]
+            [mpd.bullets :as bullets]))
 
 ; Game: wires everything together, enforces game logic and rules
 ; Stage: rendering system, provides drawable entities

@@ -15,23 +15,34 @@
     (aset obj "position" (js-obj "x" (:x state) "y" (:y state)))
     (aset obj "rotation" (:rotation state))
     [obj]))
+
 (defmethod pixi :enemies [_ enemies]
   (reduce (fn [agg enemy]
             (concat agg (pixi :player (last enemy))))
           [] (seq enemies)))
 
-; state - hierarchical primitive-only representation
-; of current frame:
-;
-; [ [ <entity> <params> [ <children> ] ],
-;   [ ... ] ]
-;
+(defmethod pixi :bullet [_ bullet]
+  (log bullet)
+  (let [shape (js/PIXI.Text.
+                (str "b")
+                (js-obj "fill" "red"))]
+    (aset shape "anchor" (js-obj "x" 0.5 "y" 0.5))
+    (aset shape "position" (js-obj "x" (:x bullet) "y" (:y bullet)))
+    [shape]))
+
+(defmethod pixi :bullets [_ bullets]
+  (reduce (fn [agg bullet]
+            (concat agg (pixi :bullet bullet)))
+          [] (seq bullets)))
+
+(def world (js/PIXI.Container.))
+
 (defn state-to-pixi [state]
-  (let [world (js/PIXI.Container.)]
-    (doseq [kv @state]
-      (doseq [obj (apply pixi kv)]
-        (.addChild world obj)))
-    world))
+  (.removeChildren world)
+  (doseq [kv @state]
+    (doseq [obj (apply pixi kv)]
+      (.addChild world obj)))
+  world)
 
 (defn setup []
   (log "  stage")
