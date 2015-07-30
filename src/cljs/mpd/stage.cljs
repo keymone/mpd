@@ -2,7 +2,7 @@
   (:require [mpd.shared :refer [log]]
             [mpd.network :as network]))
 
-(defn pukeSprite [imagePath scale randomTint]
+(defn puke_sprite [imagePath scale randomTint]
   (let [texture (js/PIXI.Texture.fromImage imagePath)
         sprite (js/PIXI.Sprite. texture)]
     (aset sprite "anchor" (js-obj "x" 0.5 "y" 0.5))
@@ -10,14 +10,14 @@
     (when randomTint (aset sprite "tint" (* (Math/random) 16777215)))
     sprite))
 
-(def crosshairSprite
-  (pukeSprite "images/crosshair.png" 1.0 false))
+(def crosshair_sprite
+  (puke_sprite "images/crosshair.png" 1.0 false))
 
 (def player-sprites (atom {}))
 (defn player-sprite [player]
   (let [exists (get @player-sprites (:id player))]
     (if (nil? exists)
-      (let [sprite (pukeSprite "images/player.png" 0.4 true)]
+      (let [sprite (puke_sprite "images/player.png" 0.4 true)]
         (log "creating sprite for " (:id player))
         (swap! player-sprites assoc (:id player) sprite)
         sprite)
@@ -50,8 +50,8 @@
           [] (seq bullets)))
 
 (defmethod pixi :crosshair [_ crosshair]
-  (aset crosshairSprite "position" (js-obj "x" (:x crosshair) "y" (:y crosshair)))
-  [crosshairSprite])
+  (aset crosshair_sprite "position" (js-obj "x" (:x crosshair) "y" (:y crosshair)))
+  [crosshair_sprite])
 
 (def root (let [c (js/PIXI.Container.)
                 bg (PIXI.extras.TilingSprite.fromImage "images/floor.png" 5000 5000)]
