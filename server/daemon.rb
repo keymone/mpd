@@ -22,7 +22,7 @@ end
 
 EventMachine.run {
   @channel = EM::Channel.new
-  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8192, :debug => true) do |ws|
+  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8197, :debug => true) do |ws|
 
     network = Thread.new do
 

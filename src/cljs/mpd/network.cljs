@@ -4,7 +4,7 @@
 (defn parseJSON [x]
   (.parse (.-JSON js/window) x))
 
-(def websocket (js/WebSocket. "ws://localhost:8192"))
+(def websocket (js/WebSocket. "ws://localhost:8197"))
 
 (def lastFramePlayer (atom nil))
 
