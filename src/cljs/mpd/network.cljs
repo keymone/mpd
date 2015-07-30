@@ -2,7 +2,8 @@
   (:require [mpd.shared :refer [log]]))
 
 (def websocket (atom nil))
-(def lastFramePlayer (atom nil))
+(def syncedFramePlayer (atom nil))
+(def currentFramePlayer (atom nil))
 (def network-state (atom nil))
 (def server-id (atom -1))
 (def inbox (atom []))
@@ -17,9 +18,15 @@
         json (.parse js/JSON data)
         player-id (.-id json)]
     (log "HANDSHAKE " player-id)
+    (js/setInterval heartbeat 33)
     (reset! server-id player-id)
     (aset @websocket "onmessage" receive)
     (reset! network-state :connected)))
+
+(defn heartbeat []
+  (when (not= @currentFramePlayer @syncedFramePlayer)
+    (send  (clj->json @currentFramePlayer)))
+  (reset! syncedFramePlayer @currentFramePlayer))
 
 (defn send [m]
   (when (= @network-state :connected)
@@ -56,8 +63,5 @@
       (swap! state assoc-in [:player :id] @server-id))
 
     (let [player (:player @state)]
-      (when (not= player @lastFramePlayer)
-        (send  (clj->json player)))
-      (reset! lastFramePlayer player))
-
+      (reset! currentFramePlayer player))
     state))

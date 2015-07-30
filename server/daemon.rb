@@ -1,6 +1,11 @@
 require 'em-websocket'
 require 'json'
 
+def pprint message
+  puts message
+  $stdout.flush
+end
+
 tick = 0
 frequency = 30
 inbox = []
@@ -21,12 +26,12 @@ EventMachine.run {
       if inbox.any?
         inbox_tmp = inbox.clone.reverse
         inbox = []
-        puts "New stuff in a queue, sending..."
+        pprint "New stuff in a queue, sending..."
         channel.each do |id, connection|
           inbox_tmp.each do |object|
             next if object['id'] == id.to_i
             connection.send object.to_json
-            puts "Sent data from player #{object['id']} to player #{id}"
+            pprint "Sent data from player #{object['id']} to player #{id}"
           end
         end
       end
@@ -36,7 +41,7 @@ EventMachine.run {
       ws.onopen {
         player_counter += 1
         player_id = player_counter
-        puts "Player #{player_id} connected!"
+        pprint "Player #{player_id} connected!"
 
         channel[player_id.to_s] = ws
         ws.send ({:id => player_id}.to_json)
@@ -44,19 +49,18 @@ EventMachine.run {
         ws.onmessage { |msg|
           msg_hash = JSON.parse(msg) rescue {}
           inbox << msg_hash
-          puts "Received from player #{msg_hash['id']}:\n#{msg_hash}"
+          pprint "Received from player #{msg_hash['id']}:\n#{msg_hash}"
         }
 
         ws.onclose {
-          puts "Player #{player_id} disconnected!"
+          pprint "Player #{player_id} disconnected!"
           channel.delete(player_id.to_s)
         }
       }
     end
 
   end
-  puts "Multi[P]layer Deatchmatch Server started!"
-  $stdout.flush
+  pprint "Multi[P]layer Deatchmatch Server started!"
 }
 
 # 10.247.110.131:8080
