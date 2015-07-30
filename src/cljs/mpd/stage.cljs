@@ -1,33 +1,22 @@
 (ns mpd.stage
-  (:require [mpd.shared :refer [log]]))
+  (:require [mpd.shared :refer [log]]
+            [mpd.network :as network]))
 
-(defn pukeSprite [imagePath]
+(defn pukeSprite [imagePath scale]
   (let [texture (js/PIXI.Texture.fromImage imagePath)
         sprite (js/PIXI.Sprite. texture)]
     (aset sprite "anchor" (js-obj "x" 0.5 "y" 0.5))
+    (aset sprite "scale" (js-obj "x" scale "y" scale))
     sprite))
 
 (def crosshairSprite
-  (pukeSprite "images/crosshair.png"))
-
-(def playerSprite
-  (pukeSprite "images/player.png"))
-
-(def enemySprite
-  (pukeSprite "images/enemy.png"))
+  (pukeSprite "images/crosshair.png" 1.0))
 
 (def player-sprites (atom {}))
 (defn player-sprite [player]
   (let [exists (get @player-sprites (:id player))]
     (if (nil? exists)
-      (let [fill (case [(:primary player) (:secondary player)]
-               [true true] "green"
-               [true false] "red"
-               [false true] "blue"
-               "green")
-            sprite (js/PIXI.Text.
-              (str (:id player))
-              (js-obj "fill" fill))]
+      (let [sprite (pukeSprite (if (= (:id player) @network/server-id) "images/player.png" "images/enemy.png") 0.4)]
         (log "creating sprite for " (:id player))
         (swap! player-sprites assoc (:id player) sprite)
         sprite)
