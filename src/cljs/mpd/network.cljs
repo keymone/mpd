@@ -33,7 +33,7 @@
   (log "  network")
   (log "connecting...")
 
-  (let [ws (js/WebSocket. "ws://localhost:8197")]
+  (let [ws (js/WebSocket. "ws://10.247.110.131:8197")]
     (doall (map #(aset ws (first %) (second %))
            [["onopen" websocket-open]
             ["onclose" websocket-close]
