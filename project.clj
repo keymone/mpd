@@ -16,8 +16,7 @@
                  [lein-pdo "0.1.1"]
                  [lein-shell "0.4.1"]]
   :aliases {"up" ["pdo" "cljsbuild" "auto,"
-                  "run" "-dev,"
-                  "shell" "sh" "-c" "cd server; bundle exec ruby daemon.rb"]}
+                  "run" "-dev,"]}
   :cljsbuild {:builds
               [{:source-paths ["src/cljs"]
                 :compiler {:output-to "resources/public/js/build/mpd.js"

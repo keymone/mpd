@@ -20,7 +20,7 @@
       (wrap-file-info)
       (wrap-dir-index)
       (wrap-with-logger)
-      (wrap-reload)))
+      ))
 
 (defn -main [& args]
   (http-kit/run-server app {:port 8080}))
