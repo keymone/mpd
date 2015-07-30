@@ -4,7 +4,8 @@ require 'json'
 tick = 0
 frequency = 30
 inbox = []
-player_id = 0
+player_counter = 0
+channel = {}
 
 ticker = Thread.new do
   loop do
@@ -14,36 +15,37 @@ ticker = Thread.new do
 end
 
 EventMachine.run {
-  @channel = EM::Channel.new
   EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8197) do |ws|
 
     timer = EM.add_periodic_timer(0) {
       if inbox.any?
         inbox_tmp = inbox.clone
         inbox = []
-        inbox_tmp.each do |object|
-          @channel.push object.to_json
+        channel.each do |id, connection|
+          inbox_tmp.each do |object|
+            next if object['id'] == id
+            connection.send object.to_json
+          end
         end
       end
     }
 
     network = Thread.new do
       ws.onopen {
-        sid = @channel.subscribe { |msg| ws.send msg }
-        player_id += 1
+        player_counter += 1
+        player_id = player_counter
+
+        channel[player_id.to_s] = ws
         ws.send ({:id => player_id}.to_json)
 
         ws.onmessage { |msg|
           msg_hash = JSON.parse(msg) rescue {}
 
           inbox << msg_hash
-
-          # print "Parsed message:\n#{msg_hash}\n"
-          # @channel.push "<#{sid}>: #{msg}"
         }
 
         ws.onclose {
-          @channel.unsubscribe(sid)
+          channel.delete(player_id.to_s)
         }
       }
     end
@@ -52,3 +54,5 @@ EventMachine.run {
   puts "Multi[P]layer Deatchmatch Server started!"
   $stdout.flush
 }
+
+# 10.247.110.131:8080
