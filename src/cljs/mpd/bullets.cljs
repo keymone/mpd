@@ -1,11 +1,14 @@
 (ns mpd.bullets
   (:require [mpd.shared :refer [log]]))
 
+(def fire_queue (atom []))
+(defn fire [bullet]
+  (swap! fire_queue conj bullet))
+
 (defn setup []
   (log "  bullet")
   (fn [state]
-    (swap!
-      state assoc :bullets
+    (swap! state assoc :bullets
       (remove nil? (mapv (fn [bullet]
         (let [x (:x bullet)
               y (:y bullet)
@@ -20,4 +23,9 @@
                              :y (if (not= dy 0) (+ y dy) y)
                              :distance (- distance 1)})))))
                          (:bullets @state))))
+    ; test for hits?
+    ; create new bullets?
+    (swap! state assoc :bullets
+      (concat (:bullets @state) @fire_queue))
+    (reset! fire_queue [])
     state))

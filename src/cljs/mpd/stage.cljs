@@ -7,7 +7,7 @@
                [true true] "green"
                [true false] "red"
                [false true] "blue"
-               "black")
+               "green")
         obj (js/PIXI.Text.
               (str (:id state))
               (js-obj "fill" fill))]
@@ -46,8 +46,14 @@
 
 (def world (js/PIXI.Container.))
 
+(def background_sprite
+  (let [bg_sprite (PIXI.extras.TilingSprite.fromImage "images/floor.png" 10000 10000)]
+    (aset bg_sprite "scale" (js-obj "x" 0.5 "y" 0.5))
+    bg_sprite))
+
 (defn state-to-pixi [state]
   (.removeChildren world)
+  (.addChild world background_sprite)
   (doseq [kv @state]
     (doseq [obj (apply pixi kv)]
       (.addChild world obj)))
@@ -56,11 +62,13 @@
 (defn setup []
   (log "  stage")
   (let [renderer (js/PIXI.autoDetectRenderer
-                   (- (.-innerWidth js/window) 4)
-                   (- (.-innerHeight js/window) 4)
-                   #js {:antialiasing false
-                        :transparent false
-                        :resolution 1})]
+          (- (.-innerWidth js/window) 4)
+          (- (.-innerHeight js/window) 4)
+          #js {:antialiasing false
+          :transparent false
+          :resolution 1})
+       ]
     (set! (.-backgroundColor renderer) "0xFFFFFF")
     (.appendChild (.-body js/document) (.-view renderer))
+    ;(.generateTexture world renderer)
     (fn [state] (.render renderer (state-to-pixi state)))))

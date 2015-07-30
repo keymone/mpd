@@ -1,5 +1,8 @@
 (ns mpd.player
-  (:require [mpd.shared :refer [log]]))
+  (:require [mpd.shared :refer [log]]
+            [mpd.bullets :as bullets]))
+
+; INPUTS
 
 (def input (atom {:up false ; 38 87
                   :down false; 40 83
@@ -42,7 +45,31 @@
   (aset js/document "onmouseup"   mousehandler)
   (aset js/document "onmousemove" movehandler))
 
+; SYNC
+
 (defn sync [json])
+
+; FIRE
+
+(defn make-bullet [player]
+  {:x (:x player)
+   :y (:y player)
+   :angle (:rotation player)
+   :speed 10
+   :distance 100
+   :damage 100
+   :type "whatever"
+   :delay 500})
+
+(def fire_timer (atom nil))
+
+(defn fire [bullet]
+  (when (nil? @fire_timer)
+    (reset! fire_timer (:delay bullet))
+    (js/setTimeout #(reset! fire_timer nil) (:delay bullet))
+    (bullets/fire bullet)))
+
+; SETUP
 
 (defn setup [stage player network]
   (log "  player")
@@ -64,5 +91,6 @@
       (swap! state assoc-in [:player :primary] (:click @input))
       (swap! state assoc-in [:player :secondary] (:rclick @input))
       (swap! state assoc-in [:crosshair :x] (:mousex @input))
-      (swap! state assoc-in [:crosshair :y] (:mousey @input)))
+      (swap! state assoc-in [:crosshair :y] (:mousey @input))
+      (when (:click @input) (fire (make-bullet player))))
     state))
