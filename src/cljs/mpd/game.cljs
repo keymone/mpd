@@ -10,24 +10,12 @@
            :rotation 0
            :primary false
            :secondary false}
-  :enemies {
-    42 {:id -1
-        :x 200
-        :y 200
-        :hp 100
-        :speed 3
-        :rotation 10
-        :primary false
-        :secondary false}}
-  :bullets [{
-    :x 400
-    :y 400
-    :speed 1
-    :angle 0
-    :damage 10
-    :distance 500
-    :type "dumdum"
-  }]
+  :enemies {}
+  :bullets []
+  :crosshair {
+    :x 0
+    :y 0
+  }
 }))
 
 (defn setup [stage player network bullets enemies]

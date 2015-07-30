@@ -62,5 +62,7 @@
       (when (not (= dx 0)) (swap! state assoc-in [:player :x] (+ x (* speed nc dx))))
       (swap! state assoc-in [:player :rotation] (Math/atan2 (- my y) (- mx x)))
       (swap! state assoc-in [:player :primary] (:click @input))
-      (swap! state assoc-in [:player :secondary] (:rclick @input)))
+      (swap! state assoc-in [:player :secondary] (:rclick @input))
+      (swap! state assoc-in [:crosshair :x] (:mousex @input))
+      (swap! state assoc-in [:crosshair :y] (:mousey @input)))
     state))

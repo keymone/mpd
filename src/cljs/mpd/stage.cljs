@@ -33,6 +33,16 @@
   (reduce (fn [agg bullet]
             (concat agg (pixi :bullet bullet)))
           [] (seq bullets)))
+          
+(def crosshairSprite
+  (let [texture (js/PIXI.Texture.fromImage "images/crosshair.png")
+        shape (js/PIXI.Sprite. texture)]
+    (aset shape "anchor" (js-obj "x" 0.5 "y" 0.5))
+    shape))
+
+(defmethod pixi :crosshair [_ crosshair]
+  (aset crosshairSprite "position" (js-obj "x" (:x crosshair) "y" (:y crosshair)))
+  [crosshairSprite])
 
 (def world (js/PIXI.Container.))
 
