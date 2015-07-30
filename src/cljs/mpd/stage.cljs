@@ -36,9 +36,14 @@
 
 (def world (js/PIXI.Container.))
 
+(def background_sprite
+  (let [bg_sprite (PIXI.extras.TilingSprite.fromImage "images/floor.png" 10000 10000)]
+    (aset bg_sprite "scale" (js-obj "x" 0.5 "y" 0.5))
+    bg_sprite))
+
 (defn state-to-pixi [state]
   (.removeChildren world)
-  (.addChild world (PIXI.extras.TilingSprite.fromImage "images/floor.png" 5000 5000))
+  (.addChild world background_sprite)
   (doseq [kv @state]
     (doseq [obj (apply pixi kv)]
       (.addChild world obj)))
