@@ -13,6 +13,9 @@
 (def crosshair_sprite
   (puke_sprite "images/crosshair.png" 1.0 false))
 
+(defn bullet_sprite []
+  (puke_sprite "images/bullet.png" 1.0 false))
+
 (def player-sprites (atom {}))
 (defn player-sprite [player]
   (let [exists (get @player-sprites (:id player))]
@@ -37,11 +40,10 @@
           [] (seq enemies)))
 
 (defmethod pixi :bullet [_ bullet]
-  (let [shape (js/PIXI.Text.
-                (str "b")
-                (js-obj "fill" "red"))]
+  (let [shape (bullet_sprite)]
     (aset shape "anchor" (js-obj "x" 0.5 "y" 0.5))
     (aset shape "position" (js-obj "x" (:x bullet) "y" (:y bullet)))
+    (aset shape "rotation" (:angle bullet))
     [shape]))
 
 (defmethod pixi :bullets [_ bullets]
