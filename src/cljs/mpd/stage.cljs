@@ -14,7 +14,12 @@
     (aset obj "anchor" (js-obj "x" 0.5 "y" 0.5))
     (aset obj "position" (js-obj "x" (:x state) "y" (:y state)))
     (aset obj "rotation" (:rotation state))
-    obj))
+    [obj]))
+(defmethod pixi :enemies [_ enemies]
+  (reduce (fn [agg enemy]
+            (concat agg (pixi :player (last enemy))))
+          []
+          (seq enemies)))
 
 ; state - hierarchical primitive-only representation
 ; of current frame:
@@ -25,7 +30,8 @@
 (defn state-to-pixi [state]
   (let [world (js/PIXI.Container.)]
     (doseq [kv @state]
-      (.addChild world (apply pixi kv)))
+      (doseq [obj (apply pixi kv)]
+        (.addChild world obj)))
     world))
 
 (defn setup []

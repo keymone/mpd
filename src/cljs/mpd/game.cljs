@@ -10,6 +10,15 @@
            :rotation 0
            :primary false
            :secondary false}
+  :enemies {
+    42 {:id -1
+        :x 300
+        :y 300
+        :hp 100
+        :speed 3
+        :rotation 10
+        :primary false
+        :secondary false}}
 }))
 
 (defn setup [stage player network]
