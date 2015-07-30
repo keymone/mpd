@@ -32,7 +32,7 @@
   (puke_sprite "images/crosshair.png" 1.0 false))
 
 (def background_tiling_sprite
-  (let [bg (PIXI.extras.TilingSprite.fromImage "images/floor.png" 5000 5000)]
+  (let [bg (PIXI.extras.TilingSprite.fromImage "images/floor.png" 10000 10000)]
     (aset bg "scale" (js-obj "x" 0.5 "y" 0.5))
     (aset bg "anchor" (js-obj "x" 0.5 "y" 0.5))
     bg))
