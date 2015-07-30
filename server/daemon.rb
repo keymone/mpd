@@ -26,7 +26,6 @@ EventMachine.run {
       if inbox.any?
         inbox_tmp = inbox.clone.reverse
         inbox = []
-        pprint "New stuff in a queue, sending..."
         channel.each do |id, connection|
           inbox_tmp.each do |object|
             next if object['id'] == id.to_i
@@ -39,6 +38,7 @@ EventMachine.run {
 
     network = Thread.new do
       ws.onopen {
+        sleep 1
         player_counter += 1
         player_id = player_counter
         pprint "Player #{player_id} connected!"
