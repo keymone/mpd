@@ -28,7 +28,7 @@
 
 (defn receive [m]
   (let [data (.-data m)]
-    ; (log "data received:" m)
+    (log "data received:" m)
     (swap! inbox conj data)))
 
 (defn clj->json [ds]

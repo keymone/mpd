@@ -21,10 +21,12 @@ EventMachine.run {
       if inbox.any?
         inbox_tmp = inbox.clone
         inbox = []
+        puts "New stuff in a queue, sending..."
         channel.each do |id, connection|
           inbox_tmp.each do |object|
-            next if object['id'] == id
+            next if object['id'] == id.to_i
             connection.send object.to_json
+            puts "Sent data from player #{object['id']} to player #{id}"
           end
         end
       end
@@ -34,17 +36,19 @@ EventMachine.run {
       ws.onopen {
         player_counter += 1
         player_id = player_counter
+        puts "Player #{player_id} connected!"
 
         channel[player_id.to_s] = ws
         ws.send ({:id => player_id}.to_json)
 
         ws.onmessage { |msg|
           msg_hash = JSON.parse(msg) rescue {}
-
           inbox << msg_hash
+          puts "Received from player #{msg_hash['id']}:\n#{msg_hash}"
         }
 
         ws.onclose {
+          puts "Player #{player_id} disconnected!"
           channel.delete(player_id.to_s)
         }
       }
