@@ -19,7 +19,7 @@ EventMachine.run {
 
     timer = EM.add_periodic_timer(1.0/60) {
       if inbox.any?
-        inbox_tmp = inbox.clone
+        inbox_tmp = inbox.clone.reverse
         inbox = []
         puts "New stuff in a queue, sending..."
         channel.each do |id, connection|
