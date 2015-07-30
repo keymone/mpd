@@ -62,12 +62,16 @@
    :delay 100})
 
 (def fire_timer (atom nil))
+; add to assets on game load and remove it from here
+(def fire_sound (js/buzz.sound. "sound/fire.wav" (js-obj :formats ["wav"])))
 
 (defn fire [bullet]
   (when (nil? @fire_timer)
     (reset! fire_timer (:delay bullet))
     (js/setTimeout #(reset! fire_timer nil) (:delay bullet))
-    (bullets/fire bullet)))
+    (bullets/fire bullet)
+    (js/console.log fire_sound)
+    (.play fire_sound)))
 
 ; SETUP
 

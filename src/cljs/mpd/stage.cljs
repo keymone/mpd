@@ -35,7 +35,6 @@
           [] (seq bullets)))
 
 (def world (js/PIXI.Container.))
-
 (def background_sprite
   (let [bg_sprite (PIXI.extras.TilingSprite.fromImage "images/floor.png" 10000 10000)]
     (aset bg_sprite "scale" (js-obj "x" 0.5 "y" 0.5))
