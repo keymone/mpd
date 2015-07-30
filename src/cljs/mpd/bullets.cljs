@@ -4,18 +4,20 @@
 (defn setup []
   (log "  bullet")
   (fn [state]
-    (doseq [bullet (:bullets @state)]
-      (let [x (:x bullet)
-            y (:y bullet)
-            distance (:distance bullet)]
-        (if (= distance 0)
-          (remove bullets bullet)
-          (let [speed (:speed bullet)
-                angle (:angle bullet)
-                dx (* (Math/cos angle) speed)
-                dy (* (Math/sin angle) speed)]
-            ;(when (not (= dx 0)) (swap! state assoc-in [:bullet :x] (+ x dx)))
-            ;(when (not (= dy 0)) (swap! state assoc-in [:bullet :y] (+ y dy)))
-            ;(aset bullet :distance (- distance 1))
-            ))))
+    (swap!
+      state assoc :bullets
+      (remove nil? (mapv (fn [bullet]
+        (let [x (:x bullet)
+              y (:y bullet)
+              distance (:distance bullet)]
+          (if (= distance 0)
+            nil
+            (let [speed (:speed bullet)
+                  angle (:angle bullet)
+                  dx (* (Math/cos angle) speed)
+                  dy (* (Math/sin angle) speed)]
+              (merge bullet {:x (if (not= dx 0) (+ x dx) x)
+                             :y (if (not= dy 0) (+ y dy) y)
+                             :distance (- distance 1)})))))
+                         (:bullets @state))))
     state))
