@@ -16,6 +16,9 @@
     (when randomTint (aset sprite "tint" (* (Math/random) 16777215)))
     sprite))
 
+(def health_bar
+  (js/PIXI.Text. "0" #js {:fill "red"}))
+
 (def player_texture
   (js/PIXI.Texture.fromImage "images/player.png"))
 

@@ -20,7 +20,13 @@
     (aset player "anchor" (js-obj "x" 0.5 "y" 0.5))
     (aset player "position" (js-obj "x" (:x state) "y" (:y state)))
     (aset player "rotation" (:rotation state))
-    [player]))
+    (if (= (:id state) @network/server-id)
+      (do
+        (aset assets/health_bar "text" (str (:hp state)))
+        (aset assets/health_bar "position" (js-obj "x" (:x state) "y" (+ (:y state) 50)))
+        (aset assets/health_bar "anchor" (js-obj "x" 0.5 "y" 0.5))
+        [player, assets/health_bar])
+      [player])))
 
 (defmethod pixi :enemies [_ enemies]
   (reduce (fn [agg enemy]
