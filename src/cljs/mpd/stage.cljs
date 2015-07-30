@@ -16,20 +16,30 @@
 (def enemySprite
   (pukeSprite "images/enemy.png"))
 
-(defmulti pixi (fn [x y] x))
-(defmethod pixi :player [_ state]
-  (let [fill (case [(:primary state) (:secondary state)]
+(def player-sprites (atom {}))
+(defn player-sprite [player]
+  (let [exists (get @player-sprites (:id player))]
+    (if (nil? exists)
+      (let [fill (case [(:primary player) (:secondary player)]
                [true true] "green"
                [true false] "red"
                [false true] "blue"
                "green")
-        obj (js/PIXI.Text.
-              (str (:id state))
+            sprite (js/PIXI.Text.
+              (str (:id player))
               (js-obj "fill" fill))]
-    (aset obj "anchor" (js-obj "x" 0.5 "y" 0.5))
-    (aset obj "position" (js-obj "x" (:x state) "y" (:y state)))
-    (aset obj "rotation" (:rotation state))
-    [obj]))
+        (log "creating sprite for " (:id player))
+        (swap! player-sprites assoc (:id player) sprite)
+        sprite)
+      exists)))
+
+(defmulti pixi (fn [x y] x))
+(defmethod pixi :player [_ state]
+  (let [player (player-sprite state)]
+    (aset player "anchor" (js-obj "x" 0.5 "y" 0.5))
+    (aset player "position" (js-obj "x" (:x state) "y" (:y state)))
+    (aset player "rotation" (:rotation state))
+    [player]))
 
 (defmethod pixi :enemies [_ enemies]
   (reduce (fn [agg enemy]
@@ -53,19 +63,21 @@
   (aset crosshairSprite "position" (js-obj "x" (:x crosshair) "y" (:y crosshair)))
   [crosshairSprite])
 
-(def world (js/PIXI.Container.))
-(def background_sprite
-  (let [bg_sprite (PIXI.extras.TilingSprite.fromImage "images/floor.png" 10000 10000)]
-    (aset bg_sprite "scale" (js-obj "x" 0.5 "y" 0.5))
-    bg_sprite))
+(def root (let [c (js/PIXI.Container.)
+                bg (PIXI.extras.TilingSprite.fromImage "images/floor.png" 5000 5000)]
+  (aset bg "scale" (js-obj "x" 0.5 "y" 0.5))
+  (.addChild c bg) c))
+(def world (let [c (js/PIXI.Container.)] (.addChild root c) c))
+(def players (let [c (js/PIXI.Container.)] (.addChild root c) c))
 
 (defn state-to-pixi [state]
   (.removeChildren world)
-  (.addChild world background_sprite)
+  (.removeChildren players)
   (doseq [kv @state]
     (doseq [obj (apply pixi kv)]
-      (.addChild world obj)))
-  world)
+      (let [container (case (first kv) :player players world)]
+        (.addChild container obj))))
+  root)
 
 (defn setup []
   (log "  stage")
