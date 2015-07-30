@@ -9,6 +9,5 @@
 (defn setup []
   (log "  enemies")
   (fn [state]
-    (log @enemies)
     (swap! state assoc :enemies @enemies)
     state))
