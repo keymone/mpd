@@ -4,31 +4,33 @@ require 'json'
 tick = 0
 frequency = 30
 
-inbox = []
+inbox = [] # dict list
 mutex = Mutex.new
 
-ticker = Thread.new do
-  loop do
-    sleep(1.0/frequency) # 1/30s, wait ~ 2 frames
-    mutex.synchronize do
-      if inbox.any?
-        puts "Processing current inbox queue having #{inbox.size} elements at tick #{tick}"
-        inbox = [] # reset inbox queue
-      end
-    end
-    tick += 60.0 / frequency # 2
-  end
-end
+player_id = 0
 
 EventMachine.run {
   @channel = EM::Channel.new
   EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8192, :debug => true) do |ws|
 
-    network = Thread.new do
+    ticker = Thread.new do
+      loop do
+        sleep(1.0/frequency) # 1/30s, wait ~ 2 frames
+        mutex.synchronize do
+          if inbox.any?
+            puts "Processing current inbox queue having #{inbox.size} elements at tick #{tick}"
+            inbox = [] # reset inbox queue
+          end
+        end
+        tick += 1
+      end
+    end
 
+    network = Thread.new do
       ws.onopen {
         sid = @channel.subscribe { |msg| ws.send msg }
-        # @channel.push "#{sid} connected!"
+        player_id += 1
+        ws.send ({:id => player_id}.to_json)
 
         ws.onmessage { |msg|
           msg_hash = JSON.parse(msg) rescue {}
@@ -45,7 +47,6 @@ EventMachine.run {
           @channel.unsubscribe(sid)
         }
       }
-
     end
 
   end
