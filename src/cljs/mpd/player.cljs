@@ -70,7 +70,7 @@
     (reset! fire_timer (:delay bullet))
     (js/setTimeout #(reset! fire_timer nil) (:delay bullet))
     (bullets/fire bullet)
-    (js/console.log fire_sound)
+    (.stop fire_sound)
     (.play fire_sound)))
 
 ; SETUP
