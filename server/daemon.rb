@@ -17,7 +17,7 @@ end
 EventMachine.run {
   EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8197) do |ws|
 
-    timer = EM.add_periodic_timer(0) {
+    timer = EM.add_periodic_timer(1.0/60) {
       if inbox.any?
         inbox_tmp = inbox.clone
         inbox = []
