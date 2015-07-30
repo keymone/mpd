@@ -1,10 +1,14 @@
 (ns mpd.enemies
-  (:require [mpd.shared :refer [log]]))
+  (:require [mpd.shared :refer [log]]
+            [mpd.bullets :as bullets]))
 
 (def enemies (atom {}))
 
 (defn sync [json]
-  (swap! enemies conj {(.-id json) (js->clj json :keywordize-keys true)}))
+  (let [data (js->clj json :keywordize-keys true)
+        entities (:entities data)]
+    (when (> (count entities) 0) (doseq [e entities] (bullets/fire e)))
+    (swap! enemies conj {(:id data) data})))
 
 (defn setup []
   (log "  enemies")
