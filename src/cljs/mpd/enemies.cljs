@@ -4,7 +4,7 @@
 (def enemies (atom {}))
 
 (defn sync [json]
-  (swap! enemies conj {(.-id json) json}))
+  (swap! enemies conj {(.-id json) (js->clj json :keywordize-keys true)}))
 
 (defn setup []
   (log "  enemies")
