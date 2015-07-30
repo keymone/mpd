@@ -1,6 +1,21 @@
 (ns mpd.stage
   (:require [mpd.shared :refer [log]]))
 
+(defn pukeSprite [imagePath]
+  (let [texture (js/PIXI.Texture.fromImage imagePath)
+        sprite (js/PIXI.Sprite. texture)]
+    (aset sprite "anchor" (js-obj "x" 0.5 "y" 0.5))
+    sprite))
+
+(def crosshairSprite
+  (pukeSprite "images/crosshair.png"))
+
+(def playerSprite
+  (pukeSprite "images/player.png"))
+
+(def enemySprite
+  (pukeSprite "images/enemy.png"))
+
 (defmulti pixi (fn [x y] x))
 (defmethod pixi :player [_ state]
   (let [fill (case [(:primary state) (:secondary state)]
@@ -33,6 +48,10 @@
   (reduce (fn [agg bullet]
             (concat agg (pixi :bullet bullet)))
           [] (seq bullets)))
+
+(defmethod pixi :crosshair [_ crosshair]
+  (aset crosshairSprite "position" (js-obj "x" (:x crosshair) "y" (:y crosshair)))
+  [crosshairSprite])
 
 (def world (js/PIXI.Container.))
 (def background_sprite

@@ -59,7 +59,7 @@
    :distance 100
    :damage 100
    :type "whatever"
-   :delay 100})
+   :delay 500})
 
 (def fire_timer (atom nil))
 ; add to assets on game load and remove it from here
@@ -94,5 +94,7 @@
       (swap! state assoc-in [:player :rotation] (Math/atan2 (- my y) (- mx x)))
       (swap! state assoc-in [:player :primary] (:click @input))
       (swap! state assoc-in [:player :secondary] (:rclick @input))
+      (swap! state assoc-in [:crosshair :x] (:mousex @input))
+      (swap! state assoc-in [:crosshair :y] (:mousey @input))
       (when (:click @input) (fire (make-bullet player))))
     state))

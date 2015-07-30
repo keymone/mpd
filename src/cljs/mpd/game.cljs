@@ -12,6 +12,10 @@
            :secondary false}
   :enemies {}
   :bullets []
+  :crosshair {
+    :x 0
+    :y 0
+  }
 }))
 
 (defn setup [stage player network bullets enemies]
