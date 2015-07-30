@@ -46,10 +46,6 @@
   (aset js/document "onmouseup"   mousehandler)
   (aset js/document "onmousemove" movehandler))
 
-; SYNC
-
-(defn sync [json])
-
 ; FIRE
 
 (defn make-bullet [player]
@@ -74,7 +70,7 @@
     (bullets/fire bullet)))
 ; SETUP
 
-(defn setup [stage player network]
+(defn setup []
   (log "  player")
   (start-listening)
   (fn [state]

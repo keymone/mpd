@@ -11,6 +11,7 @@ frequency = 30
 inbox = []
 player_counter = 0
 channel = {}
+players = {}
 
 ticker = Thread.new do
   loop do
@@ -38,16 +39,18 @@ EventMachine.run {
 
     network = Thread.new do
       ws.onopen {
-        sleep 1
+        sleep 0.5
         player_counter += 1
         player_id = player_counter
         pprint "Player #{player_id} connected!"
 
         channel[player_id.to_s] = ws
-        ws.send ({:id => player_id}.to_json)
+        ws.send({:id => player_id}.to_json)
+        players.each { |k,p| inbox << p }
 
         ws.onmessage { |msg|
           msg_hash = JSON.parse(msg) rescue {}
+          players[msg_hash['id'].to_s] = msg_hash
           inbox << msg_hash
           pprint "Received from player #{msg_hash['id']}:\n#{msg_hash}"
         }
