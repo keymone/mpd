@@ -69,10 +69,7 @@
   (when (nil? @fire_timer)
     (reset! fire_timer (:delay bullet))
     (js/setTimeout #(reset! fire_timer nil) (:delay bullet))
-    (bullets/fire bullet)
-    (.stop fire_sound)
-    (.play fire_sound)))
-
+    (bullets/fire bullet)))
 ; SETUP
 
 (defn setup [stage player network]

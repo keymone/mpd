@@ -1,8 +1,11 @@
 (ns mpd.bullets
-  (:require [mpd.shared :refer [log]]))
+  (:require [mpd.shared :refer [log]]
+            [mpd.assets :as assets]))
 
 (def fire_queue (atom []))
 (defn fire [bullet]
+  (.stop assets/fire_sound)
+  (.play assets/fire_sound)
   (swap! fire_queue conj bullet))
 
 (defn setup []
