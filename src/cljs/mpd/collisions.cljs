@@ -13,7 +13,8 @@
     ;     check distance p <-> b
     (doseq [player (conj (vals (:enemies @state)) (:player @state))
             bullet (:bullets @state)]
-      (when (< (distance player bullet) 40)
+      (when (and (< (distance player bullet) 40)
+                 (> (:hp player) 0))
         (if (= player (:player @state))
           ; if it's me
           (swap! state assoc-in [:player :hp]
