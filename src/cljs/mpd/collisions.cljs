@@ -20,9 +20,14 @@
                  (- (:hp (:player @state))
                     (:damage bullet)))
           ; if it's enemy
-          (swap! state assoc-in [:enemies (:id player) :hp]
-                 (- (:hp (get (:enemies @state) (:id player)))
-                    (:damage bullet))))
+          (do
+            (when (= (:id bullet) (:id (:player @state)))
+              ; increment a score for player
+              (swap! state assoc-in [:player :score]
+                     (inc (:score (:player @state)))))
+            (swap! state assoc-in [:enemies (:id player) :hp]
+                   (- (:hp (get (:enemies @state) (:id player)))
+                      (:damage bullet)))))
         (swap! state assoc :bullets
                (remove #(= % bullet) (:bullets @state)))))
     state))

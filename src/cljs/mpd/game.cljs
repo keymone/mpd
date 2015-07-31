@@ -6,6 +6,7 @@
            :x (+ (rand-int 300) 100)
            :y (+ (rand-int 300) 100)
            :hp 100
+           :score 0
            :speed 3
            :rotation 0
            :primary false

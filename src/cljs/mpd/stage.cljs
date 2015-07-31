@@ -28,7 +28,10 @@
         (aset assets/health_bar "text" (str (:hp state)))
         (aset assets/health_bar "position" (js-obj "x" (:x state) "y" (+ (:y state) 50)))
         (aset assets/health_bar "anchor" (js-obj "x" 0.5 "y" 0.5))
-        [player, assets/health_bar])
+        (aset assets/score_status "text" (str "SCORE: " (:score state)))
+        (aset assets/score_status "position" (js-obj "x" (:x state) "y" (- (:y state) (/ (:h dimensions) 2) -50)))
+        (aset assets/score_status "anchor" (js-obj "x" 0.5 "y" 0.5))
+        [player, assets/health_bar, assets/score_status])
       [player])))
 
 (defmethod pixi :enemies [_ enemies]

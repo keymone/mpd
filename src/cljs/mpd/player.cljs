@@ -57,7 +57,8 @@
    :distance 100
    :damage 37
    :type "whatever"
-   :delay 500})
+   :delay 500
+   :id (:id player)})
 
 (def fire_timer (atom nil))
 ; add to assets on game load and remove it from here

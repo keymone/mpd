@@ -17,7 +17,10 @@
     sprite))
 
 (def health_bar
-  (js/PIXI.Text. "0" #js {:fill "red"}))
+  (js/PIXI.Text. "0" #js {:fill "white" :font "bold 20px Arial"}))
+
+(def score_status
+  (js/PIXI.Text. "0" #js {:fill "white" :font "bold 50px Arial"}))
 
 (def player_texture
   (js/PIXI.Texture.fromImage "images/player.png"))
