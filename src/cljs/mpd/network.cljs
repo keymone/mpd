@@ -21,7 +21,7 @@
 (defn heartbeat []
   (let [current @currentFramePlayer
         synced @syncedFramePlayer]
-    (when (not= current synced)
+    (when (or (not= current synced) (not-empty @currentAttachments))
       (.send @websocket
              (.stringify js/JSON
                          (clj->js (merge @currentFramePlayer
