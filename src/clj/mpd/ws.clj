@@ -9,6 +9,7 @@
 
 (defn closed [id channel status]
   (swap! clients dissoc id)
+  (swap! players dissoc id)
   (doseq [other (vals @clients)]
     (send! other (json/write-str {:type "remove" :id id})))
   (info channel "closed, status" status))
