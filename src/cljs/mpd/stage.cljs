@@ -31,10 +31,15 @@
         [player, assets/health_bar])
       [player])))
 
+(defmethod pixi :indicator [_ enemy]
+  (let [indicator (assets/arrow_sprite)]
+    (aset indicator "x" 100)
+    (aset indicator "y" 100)
+    indicator))
+
 (defmethod pixi :enemies [_ enemies]
-  (reduce (fn [agg enemy]
-            (concat agg (pixi :player (last enemy))))
-          [] (seq enemies)))
+  (reduce (fn [agg enemy] (concat agg (pixi :player enemy)))
+          [] (vals enemies)))
 
 (defmethod pixi :bullet [_ bullet]
   (let [shape (assets/bullet_sprite)]
@@ -70,6 +75,9 @@
     (aset static "y" (- (/ (:h dimensions) 2) y))
     (aset world "x" (- (/ (:w dimensions) 2) x))
     (aset world "y" (- (/ (:h dimensions) 2) y)))
+  (doseq [enemy (seq (:enemies @state))]
+    (when (:off-screen (last enemy))
+      (.addChild root (pixi :indicator (last enemy)))))
   (doseq [kv @state]
     (doseq [obj (apply pixi kv)]
       (let [container (case (first kv)

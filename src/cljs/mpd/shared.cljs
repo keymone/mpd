@@ -5,4 +5,7 @@
 
 (defn entity_looper [coordinate]
   (if (> coordinate 5000)
-    0 (if (< coordinate 0) 5000 coordinate)))
+      (- coordinate 5000)
+      (if (< coordinate 0)
+          (+ coordinate 5000)
+          coordinate)))

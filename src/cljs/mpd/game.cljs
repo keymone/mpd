@@ -16,7 +16,7 @@
   :crosshair {:x 0
               :y 0}}))
 
-(defn setup [stage player network bullets collisions]
+(defn setup [stage player network bullets collisions enemies]
   (log "  game")
   (let [stats (js/Stats.)]
     (set! (-> (.-domElement stats) .-style .-position) "absolute")
@@ -30,6 +30,6 @@
     (defn gameloop []
       (js/requestAnimationFrame gameloop)
       (.begin stats)
-      (-> state network player bullets collisions stage)
+      (-> state network player enemies bullets collisions stage)
       (.end stats))
     (js/requestAnimationFrame gameloop)))

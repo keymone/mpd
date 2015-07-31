@@ -5,7 +5,8 @@
             [mpd.collisions :as collisions]
             [mpd.network :as network]
             [mpd.game :as game]
-            [mpd.bullets :as bullets]))
+            [mpd.bullets :as bullets]
+            [mpd.enemies :as enemies]))
 
 ; Game: wires everything together, enforces game logic and rules
 ; Stage: rendering system, provides drawable entities
@@ -18,4 +19,5 @@
   (player/setup)
   (network/setup)
   (bullets/setup)
-  (collisions/setup))
+  (collisions/setup)
+  (enemies/setup))

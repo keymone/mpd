@@ -22,6 +22,12 @@
 (def player_texture
   (js/PIXI.Texture.fromImage "images/player.png"))
 
+(def arrow_texture
+  (js/PIXI.Texture.fromImage "images/arrow.png"))
+
+(defn arrow_sprite []
+  (puke_sprite_for_texture arrow_texture 1.0 false))
+
 (def bullet_texture
   (js/PIXI.Texture.fromImage "images/bullet.png"))
 
