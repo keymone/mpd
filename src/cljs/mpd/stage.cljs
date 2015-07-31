@@ -31,12 +31,6 @@
         [player, assets/health_bar])
       [player])))
 
-(defmethod pixi :indicator [_ enemy]
-  (let [indicator (assets/arrow_sprite)]
-    (aset indicator "x" 100)
-    (aset indicator "y" 100)
-    indicator))
-
 (defmethod pixi :enemies [_ enemies]
   (reduce (fn [agg enemy] (concat agg (pixi :player enemy)))
           [] (vals enemies)))
@@ -57,17 +51,29 @@
   (aset assets/crosshair_sprite "position" (js-obj "x" (:x crosshair) "y" (:y crosshair)))
   [assets/crosshair_sprite])
 
+(defn indicator [player enemy]
+  (let [indicator (assets/arrow_sprite)
+        px (:x player) py (:y player)
+        ex (:x enemy) ey (:y enemy)
+        rotation (Math.atan2 (- ey py) (- ex px))
+        w2 (/ (:w dimensions) 2)
+        h2 (/ (:h dimensions) 2)
+        ix (+ w2 (* (- w2 40) (Math.cos rotation)))
+        iy (+ h2 (* (- h2 40) (Math.sin rotation)))]
+    (aset indicator "x" ix)
+    (aset indicator "y" iy)
+    (aset indicator "rotation" rotation)
+    indicator))
+
 (def root (js/PIXI.Container.))
-(def world
-  (let [c (js/PIXI.Container.)]
-    (.addChild root c) c))
-(def static
-  (let [c (js/PIXI.Container.)]
-    (.addChild root c) c))
+(def world (let [c (js/PIXI.Container.)] (.addChild root c) c))
+(def static (let [c (js/PIXI.Container.)] (.addChild root c) c))
+(def indicators (let [c (js/PIXI.Container.)] (.addChild root c) c))
 
 (defn state-to-pixi [state]
   (.removeChildren world)
   (.removeChildren static)
+  (.removeChildren indicators)
   (.addChild world assets/background_tiling_sprite)
   (let [x (:x (:player @state))
         y (:y (:player @state))]
@@ -77,7 +83,7 @@
     (aset world "y" (- (/ (:h dimensions) 2) y)))
   (doseq [enemy (seq (:enemies @state))]
     (when (:off-screen (last enemy))
-      (.addChild root (pixi :indicator (last enemy)))))
+      (.addChild indicators (indicator (:player @state) (last enemy)))))
   (doseq [kv @state]
     (doseq [obj (apply pixi kv)]
       (let [container (case (first kv)

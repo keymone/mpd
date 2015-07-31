@@ -26,7 +26,7 @@
   (js/PIXI.Texture.fromImage "images/arrow.png"))
 
 (defn arrow_sprite []
-  (puke_sprite_for_texture arrow_texture 1.0 false))
+  (puke_sprite_for_texture arrow_texture 0.2 false))
 
 (def bullet_texture
   (js/PIXI.Texture.fromImage "images/bullet.png"))
