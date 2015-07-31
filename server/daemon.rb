@@ -8,11 +8,6 @@ end
 
 tick = 0
 frequency = 30
-inbox = []
-player_counter = 0
-channel = {}
-players = {}
-
 ticker = Thread.new do
   loop do
     sleep(1.0/frequency) # 1/30s, wait ~ 2 frames
@@ -20,50 +15,43 @@ ticker = Thread.new do
   end
 end
 
-EventMachine.run {
-  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8197) do |ws|
+EventMachine.run do
+  channel = {}
+  players = {}
+  player_counter = 0
 
-    timer = EM.add_periodic_timer(1.0/60) {
-      if inbox.any?
-        inbox_tmp = inbox.clone.reverse
-        inbox = []
-        channel.each do |id, connection|
-          inbox_tmp.each do |object|
-            next if object['id'] == id.to_i
-            connection.send object.to_json
-            pprint "Sent data from player #{object['id']} to player #{id}"
-          end
-        end
-      end
-    }
-
-    network = Thread.new do
-      ws.onopen {
-        sleep 0.5
-        player_counter += 1
-        player_id = player_counter
-        pprint "Player #{player_id} connected!"
-
-        channel[player_id.to_s] = ws
-        ws.send({:id => player_id}.to_json)
-        players.each { |k,p| inbox << p }
-
-        ws.onmessage { |msg|
-          msg_hash = JSON.parse(msg) rescue {}
-          players[msg_hash['id'].to_s] = msg_hash
-          inbox << msg_hash
-          pprint "Received from player #{msg_hash['id']}:\n#{msg_hash}"
-        }
-
-        ws.onclose {
-          pprint "Player #{player_id} disconnected!"
-          channel.delete(player_id.to_s)
-        }
-      }
-    end
-
+  inbox = EM::Queue.new
+  popper = Proc.new do |msg|
+    channel.each {|id,conn| conn.send(msg.to_json) if msg['id'] != id }
+    inbox.pop &popper
   end
+  inbox.pop &popper
+
+  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8197) do |ws|
+    ws.onopen do
+      sleep 0.5
+      player_counter += 1
+      player_id = player_counter
+      pprint "Player #{player_id} connected!"
+
+      channel[player_id] = ws
+      ws.send({:id => player_id}.to_json)
+      players.each { |k,p| inbox.push(p) }
+
+      ws.onmessage do |msg|
+        msg_hash = JSON.parse(msg) rescue {}
+        players[msg_hash['id']] = msg_hash
+        inbox.push(msg_hash)
+      end
+
+      ws.onclose do
+        pprint "Player #{player_id} disconnected!"
+        channel.delete(player_id)
+      end
+    end
+  end
+
   pprint "Multi[P]layer Deatchmatch Server started!"
-}
+end
 
 # 10.247.110.131:8080
