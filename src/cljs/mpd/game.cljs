@@ -3,8 +3,8 @@
 
 (def state (atom {
   :player {:id -1
-           :x (+ (rand-int 300) 100)
-           :y (+ (rand-int 300) 100)
+           :x (+ (rand-int 300) 2500)
+           :y (+ (rand-int 300) 2500)
            :hp 100
            :speed 3
            :rotation 0
