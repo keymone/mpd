@@ -9,7 +9,8 @@
            :speed 3
            :rotation 0
            :primary false
-           :secondary false}
+           :secondary false
+           :type "character"}
   :enemies {}
   :bullets []
   :crosshair {

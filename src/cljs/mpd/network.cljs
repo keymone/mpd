@@ -9,6 +9,7 @@
 (def server-id (atom -1))
 (def player-sync (atom nil))
 (def enemies-sync (atom nil))
+(def remove-sync (atom []))
 
 (defn parseJSON [x] (.parse (.-JSON js/window) x))
 (defn websocket-open [] (log "OPEN"))
@@ -32,9 +33,12 @@
 (defn receive [m]
   (let [data (.-data m)
         json (.parse js/JSON data)]
-    (if (= @server-id (.-id json))
-      (reset! player-sync json)
-      (reset! enemies-sync json))))
+    (when (= "character" (.-type json))
+      (if (= @server-id (.-id json))
+        (reset! player-sync json)
+        (reset! enemies-sync json)))
+    (when (= "remove" (.-type json))
+        (swap! remove-sync conj (.-id json)))))
 
 (defn websocket-handshake [m]
   (let [data (.-data m)
@@ -52,7 +56,7 @@
   (log "  network")
   (log "connecting...")
 
-  (let [ws (js/WebSocket. "ws://10.247.110.131:8197")]
+  (let [ws (js/WebSocket. "ws://127.0.0.1:8197")]
     (doall (map #(aset ws (first %) (second %))
            [["onopen" websocket-open]
             ["onclose" websocket-close]
@@ -73,6 +77,12 @@
         (swap! state assoc :enemies
                (conj (:enemies @state) {(:id data) data}))
         (reset! enemies-sync nil)))
+
+    (when (not-empty @remove-sync)
+      (doseq [id @remove-sync]
+        (swap! state assoc :enemies
+          (dissoc (:enemies @state) id)))
+      (reset! remove-sync []))
 
     (reset! currentFramePlayer (:player @state))
     state))

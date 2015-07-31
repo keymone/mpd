@@ -47,6 +47,8 @@ EventMachine.run do
       ws.onclose do
         pprint "Player #{player_id} disconnected!"
         channel.delete(player_id)
+        players.delete(player_id)
+        inbox.push({:type => 'remove', :id => player_id})
       end
     end
   end

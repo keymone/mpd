@@ -89,7 +89,6 @@
         (entity_looper (+ y (* speed nc dy)))))
       (when (not (= dx 0)) (swap! state assoc-in [:player :x]
         (entity_looper (+ x (* speed nc dx)))))
-      (log (:x (:player @state)) " : " (:y (:player @state)))
       (swap! state assoc-in [:player :rotation]
              (Math/atan2 (- my (/ (:h stage/dimensions) 2))
                          (- mx (/ (:w stage/dimensions) 2))))
