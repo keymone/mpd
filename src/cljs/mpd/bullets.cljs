@@ -1,5 +1,5 @@
 (ns mpd.bullets
-  (:require [mpd.shared :refer [log]]
+  (:require [mpd.shared :refer [log entity_looper]]
             [mpd.assets :as assets]))
 
 (def fire_queue (atom []))
@@ -22,8 +22,8 @@
                   angle (:angle bullet)
                   dx (* (Math/cos angle) speed)
                   dy (* (Math/sin angle) speed)]
-              (merge bullet {:x (if (not= dx 0) (+ x dx) x)
-                             :y (if (not= dy 0) (+ y dy) y)
+              (merge bullet {:x (if (not= dx 0) (entity_looper (+ x dx)) x)
+                             :y (if (not= dy 0) (entity_looper (+ y dy)) y)
                              :distance (- distance 1)})))))
                          (:bullets @state))))
     ; test for hits?
