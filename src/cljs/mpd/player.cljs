@@ -1,5 +1,5 @@
 (ns mpd.player
-  (:require [mpd.shared :refer [log]]
+  (:require [mpd.shared :refer [log entity_looper]]
             [mpd.bullets :as bullets]
             [mpd.network :as network]
             [mpd.stage :as stage]))
@@ -85,8 +85,11 @@
           nc (if (and (not (= dx 0)) (not (= dy 0))) 0.7071 1)
           ; rotation
           mx (:mousex @input) my (:mousey @input)]
-      (when (not (= dy 0)) (swap! state assoc-in [:player :y] (+ y (* speed nc dy))))
-      (when (not (= dx 0)) (swap! state assoc-in [:player :x] (+ x (* speed nc dx))))
+      (when (not (= dy 0)) (swap! state assoc-in [:player :y]
+        (entity_looper (+ y (* speed nc dy)))))
+      (when (not (= dx 0)) (swap! state assoc-in [:player :x]
+        (entity_looper (+ x (* speed nc dx)))))
+      (log (:x (:player @state)) " : " (:y (:player @state)))
       (swap! state assoc-in [:player :rotation]
              (Math/atan2 (- my (/ (:h stage/dimensions) 2))
                          (- mx (/ (:w stage/dimensions) 2))))
