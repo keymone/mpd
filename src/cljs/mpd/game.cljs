@@ -7,7 +7,7 @@
            :y (+ (rand-int 300) 2500)
            :hp 100
            :score 0
-           :speed 3
+           :speed 4
            :rotation 0
            :primary false
            :secondary false

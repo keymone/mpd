@@ -54,10 +54,10 @@
    :y (+ (:y player) (* (Math/sin (+ 0.17 (:rotation player))) 80))
    :angle (:rotation player)
    :speed 10
-   :distance 100
-   :damage 37
+   :distance 500
+   :damage 13
    :type "whatever"
-   :delay 500
+   :delay 330
    :id (:id player)})
 
 (def fire_timer (atom nil))
@@ -86,13 +86,14 @@
         dy (if (:up @input) -1 (if (:down @input) 1 0))
         ; moving diagonally should mean moving faster distance-wise
         nc (if (and (not (= dx 0)) (not (= dy 0))) 0.7071 1)
+        fc (if (:click @input) 0.7 1.0)
         ; rotation
         cx (:x (:crosshair @state))
         cy (:y (:crosshair @state))]
     (when (not (= dy 0)) (swap! state assoc-in [:player :y]
-                                (entity_looper (+ y (* speed nc dy)))))
+                                (entity_looper (+ y (* speed fc nc dy)))))
     (when (not (= dx 0)) (swap! state assoc-in [:player :x]
-                                (entity_looper (+ x (* speed nc dx)))))
+                                (entity_looper (+ x (* speed fc nc dx)))))
     (swap! state assoc-in [:player :rotation]
            (Math/atan2 (- cy (/ (:h stage/dimensions) 2))
                        (- cx (/ (:w stage/dimensions) 2))))
