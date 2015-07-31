@@ -24,4 +24,5 @@
                            :optimizations :none
                            :pretty-print true
                            :source-map true}}]}
-  :main mpd.handler)
+  :main mpd.handler
+  :aot [mpd.handler])
