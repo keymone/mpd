@@ -51,3 +51,6 @@
 ;sounds
 (def fire_sound
   (js/buzz.sound. "sound/fire.wav" (js-obj :formats ["wav"])))
+
+(def music
+  (js/buzz.sound. "sound/music.mp3" (js-obj :formats ["mp3"])))
