@@ -20,6 +20,9 @@
     (aset player "anchor" (js-obj "x" 0.5 "y" 0.5))
     (aset player "position" (js-obj "x" (:x state) "y" (:y state)))
     (aset player "rotation" (:rotation state))
+    (if (<= (:hp state) 0)
+      (aset player "texture" assets/blood_texture)
+      (aset player "texture" assets/player_texture))
     (if (= (:id state) @network/server-id)
       (do
         (aset assets/health_bar "text" (str (:hp state)))

@@ -25,6 +25,9 @@
 (def bullet_texture
   (js/PIXI.Texture.fromImage "images/bullet.png"))
 
+(def blood_texture
+  (js/PIXI.Texture.fromImage "images/blood.png"))
+
 (defn bullet_sprite []
   (puke_sprite_for_texture bullet_texture 1.0 false))
 
