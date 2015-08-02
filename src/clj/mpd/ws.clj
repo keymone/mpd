@@ -28,8 +28,7 @@
 
 (defn handle [req]
   (with-channel req channel
-    (swap! player_counter inc)
-    (let [id @player_counter]
+    (let [id (swap! player_counter inc)]
       (opened id channel)
       (on-receive channel #(received id channel %))
       (on-close channel #(closed id channel %)))))
